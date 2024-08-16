@@ -1,9 +1,9 @@
 name: maven-sample-chisel-jdep
 version: 0.0.1
-summary: Sample Maven-based chiselled rock
+summary: Sample Maven-based chiselled rock using jlink
 description: |
   This image is a sample maven application
-  using openjdk-21-jre-headless slices
+  using openjdk-21-jre-headless slices and jlink
 
 base: bare
 build-base: ubuntu@24.04
