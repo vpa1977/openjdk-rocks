@@ -1,0 +1,36 @@
+name: java-runtime-plugin
+version: 0.0.1
+summary: Sample Java Runtime chiselled rock
+description: |
+  This image is a java runtime image
+
+platforms:
+  amd64:
+
+base: bare
+build-base: ubuntu@24.04
+
+services:
+  app1:
+    override: replace
+    summary: Service summary
+    command: /usr/bin/java -jar /jars/app1-0.0.1-SNAPSHOT.jar
+    startup: enabled
+
+parts:
+  app1:
+    source: app1
+    source-type: local
+    plugin: maven
+
+
+  runtime:
+    after:
+      - app1
+# temporary. this would be stage_packages
+    source: https://github.com/vpa1977/chisel-releases
+    source-type: git
+    source-branch: 24.04-openjdk-21-jre-headless
+    plugin: java-runtime
+    java-runtime-jars:
+      - jars/app1-0.0.1-SNAPSHOT.jar
