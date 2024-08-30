@@ -51,5 +51,6 @@ parts:
         libgcc-s1_libs \
         libstdc++6_libs \
         zlib1g_libs \
-        libnss3_libs
+        libnss3_libs \
+        base-files_base
       craftctl default
