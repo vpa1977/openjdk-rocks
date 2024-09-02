@@ -27,21 +27,3 @@ services:
 # should have pom.xml or build.gradle in the current directory.
 extensions:
     - spring-boot-framework
-
-parts:
-  spring-boot-framework/install-app:
-    plugin: nil
-    source: .
-    build-packages:
-      - openjdk-21-jdk
-    build-environment:
-      - JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}
-    override-build: |
-      ./gradlew jar --no-daemon
-    override-stage: |
-      mkdir -p ${CRAFT_STAGE}/jars
-      cp ${CRAFT_PART_BUILD}/build/libs/app2-0.0.1-SNAPSHOT.jar ${CRAFT_STAGE}/jars
-      craftctl default
-    override-prime: |
-      cp -r ${CRAFT_STAGE}/jars ${CRAFT_PRIME}
-      craftctl default
