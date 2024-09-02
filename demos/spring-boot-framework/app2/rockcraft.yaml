@@ -28,55 +28,20 @@ services:
 extensions:
     - spring-boot-framework
 
-# uncomment the sections you need and adjust according to your requirements.
-parts:  # you need to uncomment this line to add or update any part.
-
-#   Build Maven application
-#   spring-boot-framework/install-app:
-#     plugin: maven
-#     source: .
-#     source-type: local
-
-#   Build Gradle application
+parts:
   spring-boot-framework/install-app:
-    plugin: gradle
+    plugin: nil
     source: .
-    source-type: local
-
-#   Create Java runtime
-#   spring-boot-framework/runtime:
-#     after:
-#       - spring-boot-framework/install-app
-#     # temporary. this would be stage_packages
-#     source: https://github.com/vpa1977/chisel-releases
-#     source-type: git
-#     source-branch: 24.04-openjdk-21-jre-headless
-#     plugin: java-runtime
-
-# you may need packages to build your application. Add them here if necessary.
-#   flask-framework/dependencies:
-#     build-packages:
-#       # for example, if you need pkg-config to build one
-#       # of your packages:
-#       - pkg-config
-
-# you can add package slices or Debian packages to the image.
-# package slices are subsets of Debian packages, which result
-# in smaller and more secure images.
-# see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
-
-# add this part if you want to add packages slices to your image.
-# you can find a list of packages slices at https://github.com/canonical/chisel-releases
-#   runtime-slices:
-#     plugin: nil
-#     stage-packages:
-#       # list the required package slices for your application below.
-#       # for example, for the slice libs of libpq5:
-#       - libpq5_libs
-
-# if you want to add a Debian package to your image, add the next part
-#   runtime-debs:
-#     plugin: nil
-#     stage-packages:
-#       # list required Debian packages for your flask application below.
-#       - libpq5
+    build-packages:
+      - openjdk-21-jdk
+    build-environment:
+      - JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}
+    override-build: |
+      ./gradlew jar --no-daemon
+    override-stage: |
+      mkdir -p ${CRAFT_STAGE}/jars
+      cp ${CRAFT_PART_BUILD}/build/libs/app2-0.0.1-SNAPSHOT.jar ${CRAFT_STAGE}/jars
+      craftctl default
+    override-prime: |
+      cp -r ${CRAFT_STAGE}/jars ${CRAFT_PRIME}
+      craftctl default
