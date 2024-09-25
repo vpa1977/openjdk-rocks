@@ -51,7 +51,7 @@ extensions:
 #     source: https://github.com/vpa1977/chisel-releases
 #     source-type: git
 #     source-branch: 24.04-openjdk-21-jre-headless
-#     plugin: java-runtime
+#     plugin: jlink
 
 # you can add package slices or Debian packages to the image.
 # package slices are subsets of Debian packages, which result
