@@ -1,0 +1,30 @@
+diff --git a/pom.xml b/pom.xml
+index 276d501..c7a9c64 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -276,6 +276,25 @@
+         <artifactId>cyclonedx-maven-plugin</artifactId>
+       </plugin>
+ 
++      <plugin>
++        <groupId>com.google.cloud.tools</groupId>
++          <artifactId>jib-maven-plugin</artifactId>
++          <version>3.4.3</version>
++          <configuration>
++            <container>
++              <environment>
++                <PATH>$PATH:/usr/bin:/opt/java/bin:/opt/java/openjdk/bin</PATH>
++              </environment>
++            </container>
++            <to>
++              <image>petclinic-distroless-jib</image>
++            </to>
++            <from>
++              <image>gcr.io/distroless/java17</image>
++             </from>
++           </configuration>
++      </plugin>
++
+     </plugins>
+   </build>
+ 

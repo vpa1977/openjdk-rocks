@@ -1,0 +1,65 @@
+name: spring-petclinic-basic
+version: 0.0.1
+summary: Basic Spring Petclinic
+description: |
+  This image is Spring Petclinic sample
+  using openjdk-17-headless slices
+
+base: bare
+build-base: ubuntu@24.04
+
+run-user: _daemon_
+
+platforms:
+  amd64:
+
+services:
+  test:
+    override: replace
+    summary: Service summary
+    command: /usr/bin/java -jar /jars/application.jar
+    startup: enabled
+
+parts:
+  application:
+    plugin: nil
+    source: https://github.com/spring-projects/spring-petclinic.git
+    source-type: git
+    build-environment:
+      - JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-${CRAFT_ARCH_BUILD_FOR}"
+    build-packages:
+      - openjdk-17-jdk-headless
+    override-build: |
+      ./mvnw package
+      mkdir -p ${CRAFT_PART_INSTALL}/jars
+      cp ${CRAFT_PART_BUILD}/target/*-SNAPSHOT.jar ${CRAFT_PART_INSTALL}/jars/application.jar
+      cp ${CRAFT_PART_BUILD}/target/classes/META-INF/sbom/application.cdx.json ${CRAFT_PART_INSTALL}/jars/
+      craftctl default
+
+  ca-certificates-java:
+    after:
+      - application
+    plugin: nil
+    build-packages:
+      - ca-certificates-java
+      - openjdk-17-jdk-headless
+    override-build: |
+      mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/
+      cp /etc/ssl/certs/java/cacerts ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts
+      craftctl default
+
+  runtime:
+    after:
+      - application
+    plugin: nil
+    source: https://github.com/vpa1977/chisel-releases
+    source-type: git
+    source-branch: 24.04-openjdk-17
+    override-build: |
+      chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+        openjdk-17-jre-headless_standard base-files_base
+      cd ${CRAFT_PART_INSTALL}
+      mkdir -p usr/bin
+      java_bin=$(find . -name java -type f -executable)
+      ln -s --relative $java_bin usr/bin/java
+      craftctl default
