@@ -1,3 +1,6 @@
 [submodule "demos/ubuntu-jre/spring-petclinic"]
 	path = demos/ubuntu-jre/spring-petclinic
 	url = https://github.com/spring-projects/spring-petclinic.git
+[submodule "demos/rockcraft/gradle-plugin/spring-petclinic"]
+	path = demos/rockcraft/gradle-plugin/spring-petclinic
+	url = https://github.com/spring-projects/spring-petclinic.git
